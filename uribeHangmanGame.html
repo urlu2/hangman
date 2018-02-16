@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Rock Paper Scissors Part 6</title>
+  <link href="https://fonts.googleapis.com/css?family=Alfa+Slab+One|Monoton" rel="stylesheet"> 
+</head>
+
+<!-- font-family: 'Alfa Slab One', cursive
+font-family: 'Monoton', cursive; -->
+
+<body>
+	<div class="myTitle">
+		<h1>Hangman</h1>
+        <p>By: Luis Uribe</p>
+    </div>
+  
+    <div class="guessBox">
+        <h2 id="guess">_ _ _ _ _ _ _</h2>
+    </div>
+     
+    <div class="bgBox">
+		 <span id="badGuess"></span>
+    </div>
+
+	<div class= "sidePanel">
+			<image class= "image" src= "./assets/emoji.jpg"></image>
+		<div class= "content">
+			Wins: <div id="totalWins">0</div>
+			<br>
+			Losses:  <div id="totalLoss">0</div>
+			<br>
+			Guess again: <div id="guessLeft">10</div>
+		</div>
+	</div>
+		
+  <script type="text/javascript"></script>
+</body>
+
+<style>
+body {
+	margin: 0px;
+}
+.myTitle {
+	width: 85%;
+	height: 100px;
+	background: gold;
+	text-align: center;
+	line-height: .5;
+	font-family: 'Monoton', 'Times New Roman', Times, serif;
+	padding-top: 10px;
+	position: fixed;
+	right: 0px;
+	bottom: 0px;
+}
+.bgBox {
+	width: 85%;
+	height:30px;
+	background: lightgrey;
+	text-align: center;
+	font-family: Arial, Helvetica, sans-serif;
+	padding-top: 15px;
+	position: fixed;
+	right: 0px;
+	top: 0px;
+}
+
+.sidePanel {
+	border-right: 1px solid black;
+	width: 15%;
+	height: 100%;
+	position: fixed;
+}
+
+.image {
+	width: 100%;
+	float: left;
+}
+
+.content {
+	background: rebeccapurple;
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	font-family: 'Alfa Slab One', Arial, Helvetica, sans-serif;
+	font-size: 20px;
+	position: absolute;
+	bottom: 0px;
+}
+
+#guess {
+	display: flex;
+	justify-content: center;
+	margin-right: 0px;
+	width: 85%;
+	font-size: 100px;
+	float: right;
+	position: relative;
+	top:130px;
+
+}
+</style>
+  
+<script>
+var doubleWord = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+var wordBank =["one","two","three", "four","five","six","seven"];
+var choosenWord = "";
+var lettersInWord = [];
+var numBlanks = 0;
+var blanksAndSuccesses =[];
+var wrongLetters = [];
+var winCount = 0;
+var loseCount = 0;
+var guessesLeft = 10;
+var rightGuessCounter = 0;
+var hooray = new Audio("./assets/hooray.mp3");
+var boo = new Audio("./assets/boo.mp3");
+
+
+function reset() {
+	choosenWord = wordBank[Math.floor(Math.random() * wordBank.length)];
+	lettersInWord = choosenWord.split('');
+	numBlanks = lettersInWord.length;
+	letterGuessed = 0;
+	rightGuessCounter = 0;
+	guessesLeft = 10;
+	wrongLetters =[];
+	blanksAndSuccesses =[];
+	doubleWord = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+	test=false;
+	startGame();
+}
+
+function startGame() {
+	choosenWord = wordBank[Math.floor(Math.random() * wordBank.length)];
+	lettersInWord = choosenWord.split('');
+	numBlanks = lettersInWord.length;
+	rightGuessCounter = 0;
+	guessesLeft = 10;
+	wrongLetters =[];
+	blanksAndSuccesses =[];
+	doubleWord = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+	
+	for(var i = 0; i< numBlanks; i++) {
+		blanksAndSuccesses.push('_');
+		document.getElementById('guess').innerHTML = blanksAndSuccesses;
+	}
+
+	document.getElementById('guess').innerHTML = blanksAndSuccesses.join(' ');
+	document.getElementById('guessLeft').innerHTML = guessesLeft;
+	document.getElementById('totalWins').innerHTML = winCount;
+	document.getElementById('totalLoss').innerHTML = loseCount;
+	document.getElementById('badGuess').innerHTML = wrongLetters;
+
+	console.log(choosenWord);
+
+}
+
+function compareLetters(userKey) {
+	if(choosenWord.indexOf(userKey) > -1) {
+		for(var i = 0; i < numBlanks; i++) {
+			if(lettersInWord[i] === userKey) {
+				rightGuessCounter++;
+				blanksAndSuccesses[i] = userKey;
+				document.getElementById('guess').innerHTML = blanksAndSuccesses.join(' ');
+		}	
+	}
+}else{
+	wrongLetters.push(userKey);
+	guessesLeft--;
+	document.getElementById('guessLeft').innerHTML = guessesLeft;
+	document.getElementById('badGuess').innerHTML = wrongLetters;
+	}
+}
+
+function winLose() {
+	if(rightGuessCounter === numBlanks) {
+		winCount++;
+		document.getElementById('totalWins').innerHTML = winCount;
+		hooray.play();
+		alert('Congratulations!!!');
+		reset();
+}else if(guessesLeft === 0){
+	loseCount++;
+	document.getElementById('totalLoss').innerHTML = loseCount;
+	boo.play();
+	alert("You're a Loser!");
+	reset();
+	}
+}
+
+startGame();
+document.onkeyup = function(event) {
+	test = true;
+	var letterGuessed = event.key;
+	for(var i = 0; i < doubleWord.length; i++) {	
+		if(letterGuessed === doubleWord[i] && test === true) {
+			var spliceDword = doubleWord.splice(i,1);
+			compareLetters(letterGuessed);
+			winLose();
+		}
+	}
+}
+
+</script>
+</html>
